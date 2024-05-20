@@ -5,11 +5,18 @@ This is an extension to our earlier work on Bichrom (https://genomebiology.biome
 
 There two networks in this approach:
 1) **Sequence Netowrk (seq-net):** This networks is trained first on the sequence data to predict ChIP-seq track. It also serves as the feature generator for the nodes in the contact matrix.
-2) **GAT Network:** This network is trained on the contact matrix and features extracted from trained seq-net to predict the binding probability.
+2) **GAT Network (GAT-net):** This network is trained on the contact matrix and features extracted from trained seq-net to predict the binding probability.
 
 ### Data Construction Strategy
+In order to reduce the training time, we have incorporated few strategies during data construction.
+1) Pre-compute one-hot encoded matrices and store them into a dictionary
+2) Convert TF .bigwig file into HDF5 file
+
+To improve the generalization of the GAT model, we construct ubound (-ve) training that is much large than bound (+ve) training set. We try generate enough -ve samples such that every batch will have unique -ve samples (Although this is not alway guaranteed).
 
 ### Training Strategy
+1) **Seq-net:**
+2) **GAT-net:**
 
 ## Input Data
 
