@@ -1,9 +1,11 @@
 # Bichrom with graph attention network (GAT)
 
 ### Description 
-This is an extension to our earlier work on Bichrom (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02218-6). We have added Graph Attention Network (GAT( to predict the binding of TFs using pre-existing contact matrix data. The GAT is implemented from this papar (https://genome.cshlp.org/content/32/5/930). There two network in this approach:
-1) Sequence Netowrk (seq-net): This networks is trained first on the sequence data to predict ChIP-seq track. It also serves as the feature generator for the nodes in the contact matrix.
-2) GAT Network: This network is trained on the contact matrix and features extracted from trained seq-net to predict the binding probability.
+This is an extension to our earlier work on Bichrom (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02218-6). We have added Graph Attention Network (GAT( to predict the binding of TFs using pre-existing contact matrix data. The GAT is implemented from this papar (https://genome.cshlp.org/content/32/5/930). <br>
+
+There two networks in this approach:
+1) **Sequence Netowrk (seq-net):** This networks is trained first on the sequence data to predict ChIP-seq track. It also serves as the feature generator for the nodes in the contact matrix.
+2) **GAT Network:** This network is trained on the contact matrix and features extracted from trained seq-net to predict the binding probability.
 
 ### Data Construction Strategy
 
