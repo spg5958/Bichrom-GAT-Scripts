@@ -24,11 +24,11 @@
 ## Output
 
 ### Step-2 Output (`./construct_data.sh`)
-training_df_seq.bed
-training_df_bimodal_bound.bed
-training_df_bimodal_unbound.bed
-test_df_internal.bed
-test_df_external.bed
-stats.txt
+- training_df_seq.bed
+- training_df_bimodal_bound.bed
+- training_df_bimodal_unbound.bed
+- test_df_internal.bed
+- test_df_external.bed
+- stats.txt
 
 
