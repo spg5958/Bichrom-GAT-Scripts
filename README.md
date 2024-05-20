@@ -36,5 +36,7 @@ This is an extension to our earlier work on Bichrom. We have added Graph Attenti
 ### Step-3 Output (`./train_bichrom.sh`)
 - seqnet: Directory containing saved seqnet models at each epoch
 - bimodal: Directory containing saved GAT models at each epoch
-- Internal
+- internal_test_set_performance
+- external_test_set_performance
+- ids: training samples IDs (for debug purposes) 
 
