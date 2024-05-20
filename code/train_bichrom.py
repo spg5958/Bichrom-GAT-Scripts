@@ -17,7 +17,7 @@ import pyfasta
 import pyBigWig
 from sklearn.metrics import roc_auc_score,average_precision_score
 import seq_and_bimodal_networks_ResNet as seq_and_bimodal_networks
-import config_one_time_train as config
+import config
 import random
 import inspect
 import cooler
@@ -540,7 +540,7 @@ def build_and_train_bimodal(data_path, val_data_path, base_seq_model_path, out_p
         
 #     base_model.to(device)
       
-    bimodal_model=seq_and_bimodal_networks.bimodal_network_GAT(config.model_params_dict, config.chromatin_tracks_path, base_model)
+    bimodal_model=seq_and_bimodal_networks.bimodal_network_GAT(config.model_params_dict, base_model)
     
     print(bimodal_model)
     

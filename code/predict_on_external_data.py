@@ -22,7 +22,7 @@ import seq_and_bimodal_networks_ResNet as seq_and_bimodal_networks
 import importlib.util 
 import inspect
 import cooler
-import config_one_time_train as config
+import config
 
 _config=None
 _onehot_seq_dict = None
@@ -287,7 +287,7 @@ def evaluate_models(bed_file_path, fa_path, info, cool_file_path, model_seq_path
     model_seq.load_state_dict(torch.load(model_seq_path))
     model_seq.eval()
     
-    bimodal_model=seq_and_bimodal_networks.bimodal_network_GAT(_config.model_params_dict, _config.chromatin_tracks_path, model_seq)
+    bimodal_model=seq_and_bimodal_networks.bimodal_network_GAT(_config.model_params_dict, model_seq)
     
 #     bimodal_model=seq_and_bimodal_networks.bimodal_network_GAT(config.model_params_dict, config.chromatin_tracks_path, base_model)
     

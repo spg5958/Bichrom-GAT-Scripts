@@ -9,7 +9,7 @@ import os
 import logging
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
-import config_one_time_train as config
+import config
 import pickle
 from tqdm import tqdm
 import pyfasta
@@ -20,7 +20,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
 
-def construct_training_set_seq(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, acc_regions_file, out_path, nbins, stride=5000):
+def construct_training_set_seq(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, out_path, nbins, stride=5000):
 
     # # prepare files for defining coordiantes
     # curr_genome_bdt = utils.get_genome_sizes(genome_sizes_file, to_keep=to_keep, to_filter=to_filter)
@@ -86,7 +86,7 @@ def construct_training_set_seq(genome_sizes_file, genome_fasta_file, peaks_file,
     
     
 
-def construct_training_set_bimodal(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, acc_regions_file, out_path, nbins, stride=5000):
+def construct_training_set_bimodal(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, out_path, nbins, stride=5000):
 
     # # prepare files for defining coordiantes
     # curr_genome_bdt = utils.get_genome_sizes(genome_sizes_file, to_keep=to_keep, to_filter=to_filter)
@@ -453,7 +453,6 @@ def main():
                                peaks_file=config.peaks,
                                blacklist_file=config.blacklist, 
                                window_length=config.window_len,
-                               acc_regions_file=config.acc_domains,
                                to_filter=config.val_chroms + config.test_chroms + ['chrM', 'chrUn'],
                                to_keep=config.training_chrom_list,
                                out_path=config.data_path,
@@ -467,7 +466,6 @@ def main():
                                    peaks_file=config.peaks,
                                    blacklist_file=config.blacklist, 
                                    window_length=config.window_len,
-                                   acc_regions_file=config.acc_domains,
                                    to_filter=config.val_chroms + config.test_chroms + ['chrM', 'chrUn'],
                                    to_keep=config.training_chrom_list,
                                    out_path=config.data_path,

@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import utils
-import config_one_time_train as config
+import config
 import os
 import pickle
 from torch.utils.data import Dataset, DataLoader

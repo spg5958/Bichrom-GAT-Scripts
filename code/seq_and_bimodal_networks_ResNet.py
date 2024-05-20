@@ -390,7 +390,7 @@ class GAT_network(nn.Module):
 
 
 class bimodal_network_GAT(nn.Module):
-    def __init__(self, model_params_dict, chromtracks_path, base_model):
+    def __init__(self, model_params_dict, base_model):
         super().__init__()
         
         print("init - bimodal_network_GAT")
