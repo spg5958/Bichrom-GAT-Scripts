@@ -1,4 +1,5 @@
 # Bichrom with graph attention network (GAT)
+This is an extension to our earlier work on Bichrom. We have added Graph Attention Network to predict the binding of TFs using pre-existing contact matrix data
 
 ## Input Data
 
