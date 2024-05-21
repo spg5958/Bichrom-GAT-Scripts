@@ -1,4 +1,4 @@
-# [DOCUMETATION UNDER DEVELOPMENT]
+# [DOCUMETATION IS UNDER DEVELOPMENT]
 
 # Bichrom with graph attention network (GAT)
 
