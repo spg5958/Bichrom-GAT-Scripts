@@ -1,6 +1,6 @@
 # Bichrom with graph attention network (GAT)
 
-### Description 
+### Description
 This is an extension to our earlier work on Bichrom (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02218-6). We have added Graph Attention Network (GAT( to predict the binding of TFs using pre-existing contact matrix data. The GAT is implemented from this papar (https://genome.cshlp.org/content/32/5/930). <br>
 
 There two networks in this approach:
@@ -55,5 +55,11 @@ To improve the generalization of the GAT model, we construct ubound (-ve) traini
 - bimodal: Directory containing saved GAT models at each epoch
 - internal_test_set_performance
 - external_test_set_performance
-- ids: training samples IDs (for debug purposes) 
+- ids: training samples IDs (for debug purposes)
 
+## Brief Description of Scripts
+
+- **config.py:** This is the configuration file which contains various parameters for data construction & training
+- **construct_data.py:** This script generates training and test set
+- **construct_data.sh:** This script submits job.
+- **predict_chip_seq_track_from_seqnet.py:** 
