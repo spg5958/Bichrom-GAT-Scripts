@@ -1,103 +1,125 @@
 # Bichrom
-Bichrom provides a framework for modeling, interpreting, and visualizing the joint sequence and chromatin landscapes that determine TF-DNA binding dynamics.
-
-## Citation
-Srivastava, D., Aydin, B., Mazzoni, E.O. et al. An interpretable bimodal neural network characterizes the sequence and preexisting chromatin predictors of induced transcription factor binding. Genome Biol 22, 20 (2021). 
-https://doi.org/10.1186/s13059-020-02218-6
-
+This is an extension to our earlier work on Bichrom (https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02218-6). We have added Graph Attention Network (GAT) to predict the TF-DNA binding using pre-existing contact matrix data. The GAT is implemented from this papar (https://genome.cshlp.org/content/32/5/930). <br>
 
 ## Installation and Requirements 
 
-~~**Please Note**: This repository has been updated as of **02/11/2021**. Input file formats have been modified to increase readability.~~
+[IN DEVELOPMENT]
 
-**Please Note**: As of **03/07/2022**, the tensorflow version used by Bichrom has been changed to **2.6.2**, cudatoolkit and cudnn versions are included in `bichrom.yml`.
-
-We suggest using anaconda to create a virtual environment using the provided YAML configuration file:
-`conda env create -f bichrom.yml`  
-
-**Note**: Now Bichrom supports **MirroredStrategy** to employ multiple gpus for training.
+Clone and navigate to the Bichrom-GAT-Scripts/code. <br>
+`cd  Bichrom-GAT-Scripts/code`
 
 ## Usage
 
-### Step 1 - Construct Bichrom Input Data
+### Step 1 - Collect following data in input directory
+You can find some input files in `example_input` directory.
 
-Clone and navigate to the Bichrom repository. 
+- MultiGPS .events file
+- ChIP-seq .bigwig file
+- Genome sizes file (.info)
+- Genome .fasta file
+- Blacklist regions .bed file
+
+### Step 2 - Modify parameters in config.py file as necessary
+Some important parameters that you may need to modify are given below. Please refer to the `code/config.py` for additional parameters
+```
+# Number of Epochs
+EPOCHS = 2
+
+# batch size
+batchsize = 64
+
+# Fraction of data to be used for constructing training and test set            
+frac = 0.002
+
+# stride for generating onehot_seq_dict & chip-seq hdf5 file
+stride = 50
+
+# prediction region length
+window_len = 400
+
+# context around prediction region
+context_window_len = 10_000
+
+# stride used for chopping genome during training set construction
+chop_genome_stride=50
+
+# number of times to oversample chip-seq (positive) regions in training set
+num_oversample_chip_seq_peaks = 5
+
+# output path
+out_path = "../example_output"
+
+# input data path
+in_path = "../example_input"
+
+# experiment name (directory with this name will be create in out_path)
+exp_name="experiment_name"
+
+# training data directory name (directory with this name will be created in out_path/exp_name)
+training_data_dir_name="training_data"
+
+# train out directory name (directory with this name will be created in out_path/exp_name)
+train_out_dir_name="train_out"
+
+# test results directory path (directory with this name will be created in out_path/exp_name/train_out)
+test_out_dir_name="test_set_performance"
+
+# path to genome sizes file
+info = f"{in_path}/mm10.info"
+
+# path to genome fasta file
+fa = f"{in_path}/mm10.fa"
+
+# path to chip seq bigwig file in a list
+bigwig_tracks_path_list =[
+    f"{in_path}/Ascl1_R1_R2_R3_rep_avg.bw"
+]
+
+# path to MultiGPS .event file
+peaks = f"{in_path}/multigps_2023-03-30-05-43-08_ES.events"
+
+# path to blacklist regions .bed file
+blacklist = f"{in_path}/mm10_blacklist.bed"
+
+# list training chromosomes
+training_chrom_list = ["chr1"]
+
+# list of validation chromosomes
+val_chroms = ["chr17"]
+
+# list of test chromosomes
+test_chroms = ["chr10"]
+
+# path to cool .file
+cool_file_path = f"{in_path}/GSE130275_mESC_WT_combined_1.3B_400_normalized.cool"
+
+# resolution of .cool file
+resolution = window_len
+```
+
+### Step 3 - Construct Input Data
+
+
 ```
 # Activate conda environment 
 source activate bichrom
 
-cd construct data
-usage: construct_data.py [-h] -info INFO -fa FA -blacklist BLACKLIST -len LEN
-                         -acc_domains ACC_DOMAINS -chromtracks CHROMTRACKS
-                         [CHROMTRACKS ...] -peaks PEAKS -o OUTDIR
-
-Construct Training Data For Bichrom
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -info INFO            Genome sizes file
-  -fa FA                The fasta file for the genome of interest
-  -blacklist BLACKLIST  Blacklist file for the genome of interest
-  -len LEN              Size of training, test and validation windows
-  -acc_domains ACC_DOMAINS
-                        Bed file with accessible domains
-  -chromtracks CHROMTRACKS [CHROMTRACKS ...]
-                        A list of BigWig files for all input chromatin
-                        experiments
-  -peaks PEAKS          A ChIP-seq or ChIP-exo peak file in multiGPS file
-                        format
-  -o OUTDIR, --outdir OUTDIR
-                        Output directory for storing train, test data
-  -p PROCESSORS         Number of processors
-  -val_chroms CHROMOSOME
-                        Space-delimited chromosome names would be used as validation dataset
-  -test_chroms CHROMOSOME
-                        Space-delimited chromosome names would be used as test dataset
+usage: 
+./construct_data.sh
 ```
 
-**Required Arguments**
+### Step 3 - Output 
+construct_data.py will produce following files which includes train, test bed files and other files in the specified output directory.
 
-**info**:   
-This is a standard genome sizes file, recording the size of each chromosome. It contains 2 tab-separated columns containing the chromosome name and chromosome size.  
-For an example file, please see: `sample_data/mm10.info`.  
-Genome sizes files are typically available from the UCSC Genome Browser (https://genome.ucsc.edu)
-
-**fa**:  
-This is a fasta file from which train, test and validation data should be constructed. 
-
-**len**:  
-Length of training, test and validation windows. (**Recommended=500**)
-
-**acc_domains**:   
-A BED file containing accessibility domains in the cell-type of interest. This will be used for sampling regions from accessible chromatin when constructing the Bichrom training data.  
-For an example file, please see: `sample_data/mES_atacseq_domains.bed`.
-
-**chromtracks**:   
-One or more BigWig files containing histone ChIP-seq or ATAC-seq data. 
-
-**peaks**:  
-ChIP-seq or ChIP-exo TF peaks in the multiGPS file format. Each peak is represented as **chromosome:midpoint**.  
-For an example file, please see: `sample_data/Ascl1.events`.
-
-**nbins**:  
-The number of bins to use for binning the chromatin data. (**Recommended=10-20**. Note that with an increase in resolution and **nbins** (or decrease in bin size), the memory requirements will increase.)
-
-**o**:   
-Output directory for storing output train, test and validation datasets. 
-
-**blacklist** (optional):   
-A blacklist BED file, with artifactual regions to be excluded from the training.  
-For an example file, please see: `sample_data/mm10_blacklist.bed`.
-
-**p** (optional):    
-Number of processors, default is 1.    
-It is suggested to provide more cores to speed up training sample preparation
-
-### Step 1 - Output 
-construct_data.py will produce train, test and validation datasets in the specified output directory.
-This function will also produce a configuration file called **bichrom.yaml**, which can be used as input to run Bichrom. This configuration file stores the paths to the created train, test and validation datasets. 
-
-
+- common_data: Directory containing onehot_seq dictionary & chip-seq hdf5 file 
+- training_df_seq.bed
+- training_df_bimodal_bound.bed
+- training_df_bimodal_unbound.bed
+- test_df_internal.bed
+- test_df_external.bed
+- stats.txt
+- config.py: Copy of configuration file
+ 
 ### Step 2 - Train Bichrom
 
 ```
