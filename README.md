@@ -105,7 +105,7 @@ resolution = window_len
 # Activate conda environment 
 source activate bichrom
 
-usage: 
+Run: 
 ./construct_data.sh
 ```
 
@@ -125,7 +125,8 @@ construct_data.py will produce following files which includes train, test bed fi
 ### Step 4 - Train and Evaluate Bichrom-GAT
 
 ```
-usage: ./train_bichrom.sh
+Run:
+./train_bichrom.sh
 ```
 
 ### Step 4 - Description of Bichrom-GAT's Output
@@ -153,12 +154,23 @@ Bichrom output directory.
 
   
 
-### Step 5 - Moded Inference (Predict ChIP-seq Track (optional))
-Use `trainNN/predict_bed.py` to predict on user-provided regions
+### Step 5 - Moded Inference (Predict ChIP-seq Track) [optional]
+Modify the following parameters in `predict_chip_seq_track_from_seqnet.py` file.
+```
+# chromosome for which to predict bigwig track
+_chr="chr10"
 
+# trained seq-net model path
+seq_model_path=f"{config.train_out_path}/seqnet/best_seq_model_epoch_1_train_loss_0.32.pt"
+
+# output directory path
+out_path=f"{config.exp_path}/predict_chip_seq_track_from_seqnet"
+
+# window length of each sample. This shold be equal to total window length that seq-net was train on (prediction window length + context window length)
+chop_genome_window_size=config.window_len+config.context_window_len
 ```
-cd trainNN  
-```
+Then run following command to predict on ChIP-seq tracks <br>
+`./predict_chip_seq_track_from_seqnet.sh`
 
 **chromtracks**
 
