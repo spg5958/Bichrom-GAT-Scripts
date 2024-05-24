@@ -132,12 +132,12 @@ usage: ./train_bichrom.sh
 Bichrom output directory. 
   * seqnet: 
     * records the training loss of seq-net at each epoch.
-    * stores models () checkpointed after each epoch. 
-    * stores ouput probabilities over the test data for a sequence-only network. 
+    * stores models (PyTorch object) checkpointed after each epoch. 
+    * creates train_hist_seq.csv which contains average training loss at every epoch
   * bimodal: 
-    * records the validation loss and auPRC for each epoch the Bichrom. 
-    * stores models (tf.Keras Models) checkpointed after each epoch. 
-    * stores the Bichrom ouput probabilities over testing data. 
+    * records the training loss of seq-net at each epoch.
+    * stores models (PyTorch object) checkpointed after each epoch. 
+    * creates train_hist_seq.csv which contains average training loss at every epoch
   * metrics.txt: stores the test auROC and the auPRC for both a sequence-only network and for Bichrom. 
   * best_model.hdf5: A Bichrom tensorflow.Keras Model (with the highest validation set auPRC)
   * precision-recall curves for the sequence-only network and Bichrom.
