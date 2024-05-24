@@ -141,35 +141,23 @@ Bichrom output directory.
     *  also, stores best performing model (i.e., mininum train loss).
     * creates train_hist_seq.csv which contains average training loss at every epoch
   * test_set_performance:
-    * internal_test_set_performance:
-    * external_test_set_performance:
-      * metrics.txt: stores the test auROC and the auPRC for both a sequence-only network and for Bichrom. 
+    * internal_test_set_performance: stores internal test-set performance of the best GAT-net/Bimodal-net
+      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve prediction at 0.5 cut-off
+      * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
+      * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
+    * external_test_set_performance: stores external test-set performance of the best GAT-net/Bimodal-net
+      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve prediction at 0.5 cut-off
+      * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
+      * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
+ * ids: training samples IDs (for debugging purposes) 
 
   
 
-### Moded Inference (Predict)
+### Step 5 - Moded Inference (Predict ChIP-seq Track (optional))
 Use `trainNN/predict_bed.py` to predict on user-provided regions
 
 ```
 cd trainNN  
-To view help:   
-python predict_bed.py -h
-usage: predict_bed.py [-h] -mseq MSEQ -msc MSC -fa FA -chromtracks CHROMTRACKS [CHROMTRACKS ...] 
-                           -nbins NBINS -prefix PREFIX -bed BED
-
-Use Bichrom model for prediction given bed file
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -mseq MSEQ            Sequence Model
-  -msc MSC              Bichrom Model
-  -fa FA                The fasta file for the genome of interest
-  -chromtracks CHROMTRACKS [CHROMTRACKS ...]
-                        A list of BigWig files for all input chromatin experiments, please follow the same order of training data
-  -nbins NBINS          Number of bins for chromatin tracks
-  -prefix PREFIX        Output prefix
-  -bed BED              bed file describing region used for prediction
-
 ```
 
 **chromtracks**
