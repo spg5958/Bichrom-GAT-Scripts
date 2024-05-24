@@ -143,26 +143,26 @@ Run:
 
 ### Step 4 - Description of Bichrom-GAT's Output
 Bichrom output directory. 
-  * **seqnet:** 
-    * records the training loss of seq-net at each epoch.
-    * stores models (PyTorch object) checkpointed after each epoch.
-    * also, stores best performing model (i.e., mininum train loss).
-    * creates train_hist_seq.csv which contains average training loss at every epoch
-  * **bimodal:** 
-    * records the training loss of GAT-net/Bimodal-net at each epoch.
-    * stores models (PyTorch object) checkpointed after each epoch.
-    *  also, stores best performing model (i.e., mininum train loss).
-    * creates train_hist_seq.csv which contains average training loss at every epoch
-  * **test_set_performance:**
-    * **internal_test_set_performance:** stores internal test-set performance of the best GAT-net/Bimodal-net
-      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve predictions at 0.5 cut-off
-      * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
-      * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
-    * **external_test_set_performance:** stores external test-set performance of the best GAT-net/Bimodal-net
-      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve predictions at 0.5 cut-off
-      * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
-      * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
- * **ids:** training samples IDs (for debugging purposes) 
+  - **seqnet:** 
+    - records the training loss of seq-net at each epoch.
+    - stores models (PyTorch object) checkpointed after each epoch.
+    - also, stores best performing model (i.e., mininum train loss).
+    - creates train_hist_seq.csv which contains average training loss at every epoch
+  - **bimodal:** 
+    - records the training loss of GAT-net/Bimodal-net at each epoch.
+    - stores models (PyTorch object) checkpointed after each epoch.
+    -  also, stores best performing model (i.e., mininum train loss).
+    - creates train_hist_seq.csv which contains average training loss at every epoch
+  - **test_set_performance:**
+    - **internal_test_set_performance:** stores internal test-set performance of the best GAT-net/Bimodal-net
+      - test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve predictions at 0.5 cut-off
+      - test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
+      - test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
+    - **external_test_set_performance:** stores external test-set performance of the best GAT-net/Bimodal-net
+      - test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve predictions at 0.5 cut-off
+      - test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
+      - test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
+ - **ids:** training samples IDs (for debugging purposes) 
 
   
 ### Step 5 - Moded Inference (Predict ChIP-seq Track) [optional]
