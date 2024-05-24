@@ -15,11 +15,11 @@ cd  Bichrom-GAT-Scripts/code
 ### Step 1 - Collect the following data in any input directory
 You can find some input files in `example_input` directory.
 
-- MultiGPS .events file
-- ChIP-seq .bigwig file
-- Genome sizes file (.info)
-- Genome .fasta file
-- Blacklist regions .bed file
+- **MultiGPS .events file**
+- **ChIP-seq .bigwig file**
+- **Genome sizes file (.info)**
+- **Genome .fasta file**
+- **Blacklist regions .bed file**
 
 ### Step 2 - Modify parameters in config.py file as necessary
 Some important parameters that you may need to modify are given below. Please refer to the `code/config.py` for additional parameters
@@ -131,22 +131,22 @@ Run:
 
 ### Step 4 - Description of Bichrom-GAT's Output
 Bichrom output directory. 
-  * seqnet: 
+  * **seqnet:** 
     * records the training loss of seq-net at each epoch.
     * stores models (PyTorch object) checkpointed after each epoch.
     * also, stores best performing model (i.e., mininum train loss).
     * creates train_hist_seq.csv which contains average training loss at every epoch
-  * bimodal: 
+  * **bimodal:** 
     * records the training loss of GAT-net/Bimodal-net at each epoch.
     * stores models (PyTorch object) checkpointed after each epoch.
     *  also, stores best performing model (i.e., mininum train loss).
     * creates train_hist_seq.csv which contains average training loss at every epoch
-  * test_set_performance:
-    * internal_test_set_performance: stores internal test-set performance of the best GAT-net/Bimodal-net
+  * **test_set_performance:**
+    * **internal_test_set_performance:** stores internal test-set performance of the best GAT-net/Bimodal-net
       * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve prediction at 0.5 cut-off
       * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
       * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
-    * external_test_set_performance: stores external test-set performance of the best GAT-net/Bimodal-net
+    * **external_test_set_performance:** stores external test-set performance of the best GAT-net/Bimodal-net
       * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve prediction at 0.5 cut-off
       * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
       * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
@@ -169,10 +169,8 @@ out_path=f"{config.exp_path}/predict_chip_seq_track_from_seqnet"
 # window length of each sample. This shold be equal to total window length that seq-net was train on (prediction window length + context window length)
 chop_genome_window_size=config.window_len+config.context_window_len
 ```
-Then run following command to predict on ChIP-seq tracks <br>
+Then run the following command to predict on ChIP-seq tracks <br>
 ```
 Run:
 ./predict_chip_seq_track_from_seqnet.sh
 ```
-
-Bed file containing the regions for prediction
