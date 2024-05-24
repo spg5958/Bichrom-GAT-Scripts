@@ -134,7 +134,7 @@ construct_data.py will produce following files which includes train, test bed fi
  
 ### Step 4 - Train and Evaluate Bichrom-GAT
 There two networks in this approach:
-1) **Sequence-only Netowrk (seq-net):** This networks is trained first on the sequence data to predict ChIP-seq track. It also serves as the feature generator for the nodes in the contact matrix.
+1) **Sequence-only Netowrk (seq-net):** This networks is trained first on the sequence data to predict ChIP-seq track. It also serves as the feature generator for the nodes in the contact matrix. The input to seq-next is region of length `config.window_length` (prediction window) which get expanded to both size by half of `config.context_window_length` before training. Then, seq-net is trained on the sequence of size `config.window_length + config.context_window_length`. It predicts the ChIP-seq bigwig values averaged over bins of size 100. E.g. If input size of 400bp and context window size is 10,000bp then input is expanded to both sides by 5000pb and the out size is 
 2) **GAT Network (GAT-net/Bimodal-net):** This network is trained on the contact matrix and features extracted from trained seq-net to predict the binding probability.
 ```
 Run:
@@ -155,17 +155,16 @@ Bichrom output directory.
     * creates train_hist_seq.csv which contains average training loss at every epoch
   * **test_set_performance:**
     * **internal_test_set_performance:** stores internal test-set performance of the best GAT-net/Bimodal-net
-      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve prediction at 0.5 cut-off
+      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve predictions at 0.5 cut-off
       * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
       * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
     * **external_test_set_performance:** stores external test-set performance of the best GAT-net/Bimodal-net
-      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve prediction at 0.5 cut-off
+      * test_set_metrics.txt: stores AUC ROC, AUC PRC, Confusion matrix, and number of +ve & -ve predictions at 0.5 cut-off
       * test_set_metrics.csv: stores epoch, AUC ROC, and AUC PRC
       * test_set_probs_bimodal.txt: stores probabilities predicted by best GAT-net/Bimodal-net
- * ids: training samples IDs (for debugging purposes) 
+ * **ids:** training samples IDs (for debugging purposes) 
 
   
-
 ### Step 5 - Moded Inference (Predict ChIP-seq Track) [optional]
 Modify the following parameters in `predict_chip_seq_track_from_seqnet.py` file.
 ```
