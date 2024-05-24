@@ -113,14 +113,14 @@ Run:
 construct_data.py will produce following files which includes train, test bed files and other files in the specified output directory.
 
 - **common_data:** Directory containing onehot_seq dictionary & chip-seq hdf5 file 
-- **training_df_seq.bed**
-- **training_df_bimodal_bound.bed**
-- **training_df_bimodal_unbound.bed**
-- **test_df_internal.bed**
-- **test_df_external.bed**
-- **val_df_external.bed**
-- **stats.txt**
-- config.py: Copy of configuration file
+- **training_df_seq.bed:** Bed file containing the regions for prediction
+- **training_df_bimodal_bound.bed:**
+- **training_df_bimodal_unbound.bed:**
+- **test_df_internal.bed:**
+- **test_df_external.bed:**
+- **val_df_external.bed:**
+- **stats.txt:**
+- **config.py:** Copy of configuration file
  
 ### Step 4 - Train and Evaluate Bichrom-GAT
 
@@ -170,16 +170,9 @@ out_path=f"{config.exp_path}/predict_chip_seq_track_from_seqnet"
 chop_genome_window_size=config.window_len+config.context_window_len
 ```
 Then run following command to predict on ChIP-seq tracks <br>
-`./predict_chip_seq_track_from_seqnet.sh`
-
-**chromtracks**
-
-Bigwig files used in `construct_data` step, **NOTE: Please provide the bigwig files in the exact same order as provided to construct_data.py**
-
-**nbins**
-
-Number of bins for binning, **NOTE: Please use the exactly same number as used in construct_data.py**
-
-
+```
+Run:
+./predict_chip_seq_track_from_seqnet.sh
+```
 
 Bed file containing the regions for prediction
