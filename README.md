@@ -9,6 +9,12 @@ Clone and navigate to the Bichrom-GAT-Scripts/code. <br>
 ```
 cd  Bichrom-GAT-Scripts/code
 ```
+## Brief Description of Each Script
+
+- **config.py:** This is the configuration file which contains various parameters for data construction & training
+- **construct_data.py:** This script generates training and test set
+- **construct_data.sh:** This script submits job.
+- **predict_chip_seq_track_from_seqnet.py:** 
 
 ## Usage
 
