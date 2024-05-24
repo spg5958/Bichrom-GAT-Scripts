@@ -4,7 +4,7 @@ EPOCHS = 2
 # batch size
 batchsize = 64
 
-# Fraction of data to be used to construct training and test set            
+# Fraction of data to be used for constructing training and test set            
 frac = 0.002
 
 # stride for generating onehot_seq_dict & chip-seq hdf5 file
@@ -91,7 +91,7 @@ data_loader_num_workers = 4
 
 
 
-# INTERNAL PARAMETERS (MODIFY ONLY IF REQUIRED): These are the default paths to various directories and files used during training and testing. You many need to modify this
+# INTERNAL PARAMETERS (MODIFY ONLY IF REQUIRED): These are the default paths to various directories and files used during training and testing. You many not need to modify this
 
 # number of 100 bp bins 
 nbins = (context_window_len + window_len)//100
