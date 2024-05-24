@@ -100,7 +100,11 @@ resolution = window_len
 ```
 
 ### Step 3 - Construct Input Data
+In order to reduce the training time, we have incorporated few strategies during data construction.
+1) Pre-compute one-hot encoded matrices and store them into a dictionary
+2) Convert TF .bigwig file into HDF5 file
 
+To improve the generalization of the GAT model, we construct ubound (-ve) training that is much large than bound (+ve) training set. We try generate enough -ve samples such that every batch will have unique -ve samples (Although this is not alway guaranteed).
 ```
 # Activate conda environment 
 source activate bichrom
@@ -123,7 +127,9 @@ construct_data.py will produce following files which includes train, test bed fi
 - **config.py:** Copy of configuration file
  
 ### Step 4 - Train and Evaluate Bichrom-GAT
-
+There two networks in this approach:
+1) **Sequence-only Netowrk (seq-net):** This networks is trained first on the sequence data to predict ChIP-seq track. It also serves as the feature generator for the nodes in the contact matrix.
+2) **GAT Network (GAT-net/Bimodal-net):** This network is trained on the contact matrix and features extracted from trained seq-net to predict the binding probability.
 ```
 Run:
 ./train_bichrom.sh
