@@ -112,14 +112,14 @@ usage:
 ### Step 3 - Output 
 construct_data.py will produce following files which includes train, test bed files and other files in the specified output directory.
 
-- common_data: Directory containing onehot_seq dictionary & chip-seq hdf5 file 
-- training_df_seq.bed
-- training_df_bimodal_bound.bed
-- training_df_bimodal_unbound.bed
-- test_df_internal.bed
-- test_df_external.bed
-- val_df_external.bed
-- stats.txt
+- **common_data:** Directory containing onehot_seq dictionary & chip-seq hdf5 file 
+- **training_df_seq.bed**
+- **training_df_bimodal_bound.bed**
+- **training_df_bimodal_unbound.bed**
+- **test_df_internal.bed**
+- **test_df_external.bed**
+- **val_df_external.bed**
+- **stats.txt**
 - config.py: Copy of configuration file
  
 ### Step 4 - Train and Evaluate Bichrom-GAT
@@ -132,15 +132,19 @@ usage: ./train_bichrom.sh
 Bichrom output directory. 
   * seqnet: 
     * records the training loss of seq-net at each epoch.
-    * stores models (PyTorch object) checkpointed after each epoch. 
+    * stores models (PyTorch object) checkpointed after each epoch.
+    * also, stores best performing model (i.e., mininum train loss).
     * creates train_hist_seq.csv which contains average training loss at every epoch
   * bimodal: 
-    * records the training loss of seq-net at each epoch.
-    * stores models (PyTorch object) checkpointed after each epoch. 
+    * records the training loss of GAT-net/Bimodal-net at each epoch.
+    * stores models (PyTorch object) checkpointed after each epoch.
+    *  also, stores best performing model (i.e., mininum train loss).
     * creates train_hist_seq.csv which contains average training loss at every epoch
-  * metrics.txt: stores the test auROC and the auPRC for both a sequence-only network and for Bichrom. 
-  * best_model.hdf5: A Bichrom tensorflow.Keras Model (with the highest validation set auPRC)
-  * precision-recall curves for the sequence-only network and Bichrom.
+  * test_set_performance:
+    * internal_test_set_performance:
+    * external_test_set_performance:
+      * metrics.txt: stores the test auROC and the auPRC for both a sequence-only network and for Bichrom. 
+
   
 
 ### Moded Inference (Predict)
