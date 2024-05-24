@@ -6,11 +6,13 @@ This is an extension to our earlier work on Bichrom (https://genomebiology.biome
 [IN DEVELOPMENT]
 
 Clone and navigate to the Bichrom-GAT-Scripts/code. <br>
-`cd  Bichrom-GAT-Scripts/code`
+```
+cd  Bichrom-GAT-Scripts/code
+```
 
 ## Usage
 
-### Step 1 - Collect following data in input directory
+### Step 1 - Collect the following data in any input directory
 You can find some input files in `example_input` directory.
 
 - MultiGPS .events file
@@ -99,7 +101,6 @@ resolution = window_len
 
 ### Step 3 - Construct Input Data
 
-
 ```
 # Activate conda environment 
 source activate bichrom
@@ -117,52 +118,23 @@ construct_data.py will produce following files which includes train, test bed fi
 - training_df_bimodal_unbound.bed
 - test_df_internal.bed
 - test_df_external.bed
+- val_df_external.bed
 - stats.txt
 - config.py: Copy of configuration file
  
-### Step 2 - Train Bichrom
+### Step 4 - Train and Evaluate Bichrom-GAT
 
 ```
-cd trainNN  
-To view help:   
-python run_bichrom.py -h
-usage: run_bichrom.py [-h] -training_schema_yaml TRAINING_SCHEMA_YAML -len LEN
-                      -outdir OUTDIR -nbins NBINS
-
-Train and Evaluate Bichrom
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -training_schema_yaml TRAINING_SCHEMA_YAML
-                        YAML file with paths to train, test and val data
-  -len LEN              Size of genomic windows
-  -outdir OUTDIR        Output directory
-  -nbins NBINS          Number of bins
-
+usage: ./train_bichrom.sh
 ```
-  
-**Required arguments**: 
 
-**training_schema_yaml**:  
-This configuration files contains paths to the formatted train, test and validation data. This file will be automatically generated using construct_data.py (**see above - construct_data.py will output bichrom.yaml**).
-
-In order to construct the training data, we implement several sampling strategies including over-sampling the negative training regions from accessible chromatin and from genomic regions flanking the TF binding sites (detailed in the paper). However, if you would like to construct training data using your own strategy, please input a custom configuration file here. More details for custom configuration files can be found at the bottom of the README.  
-
-**len**:  
-The size of genomic windows used for training, validation and testing. (Recommended: 500).    
-**nbins**:  
-The number of bins to use for binning the chromatin data.   
-**outdir**:   
-Bichrom's output directory.  
-
-
-### Step 2 - Description of Bichrom's Output
+### Step 4 - Description of Bichrom-GAT's Output
 Bichrom output directory. 
   * seqnet: 
-    * records the validation loss and auPRC for each epoch the sequence-only network (Bichrom-SEQ).
-    * stores models (tf.Keras Models) checkpointed after each epoch. 
+    * records the training loss of seq-net at each epoch.
+    * stores models () checkpointed after each epoch. 
     * stores ouput probabilities over the test data for a sequence-only network. 
-  * bichrom: 
+  * bimodal: 
     * records the validation loss and auPRC for each epoch the Bichrom. 
     * stores models (tf.Keras Models) checkpointed after each epoch. 
     * stores the Bichrom ouput probabilities over testing data. 
@@ -170,12 +142,6 @@ Bichrom output directory.
   * best_model.hdf5: A Bichrom tensorflow.Keras Model (with the highest validation set auPRC)
   * precision-recall curves for the sequence-only network and Bichrom.
   
-~~### Optional: Custom Training Sets and YAML files~~
-
-**TODO**: Due to currently Bichrom saving dataset in Tensorflow TFRecord format, a new way of providing custom training set and yaml files will be released.
-
-### 2-D Bichrom embeddings
-For 2-D latenet embeddings, please refer to the README in the ```Bichrom/latent_embeddings directory```
 
 ### Moded Inference (Predict)
 Use `trainNN/predict_bed.py` to predict on user-provided regions
@@ -201,16 +167,6 @@ optional arguments:
   -bed BED              bed file describing region used for prediction
 
 ```
-  
-**Required arguments**: 
-
-**mseq**/**msc**
-
-Sequence-only/Bichrom model saved in HDF5 format
-
-**fa**
-
-Fasta file of the genome
 
 **chromtracks**
 
@@ -220,10 +176,6 @@ Bigwig files used in `construct_data` step, **NOTE: Please provide the bigwig fi
 
 Number of bins for binning, **NOTE: Please use the exactly same number as used in construct_data.py**
 
-**prefix**
 
-Prefix of the output predictions
-
-**bed**
 
 Bed file containing the regions for prediction
