@@ -16,11 +16,7 @@ umask 007
 source ~/conda_init.sh
 conda activate pytorch_bichrom
 
-
 SECONDS=0
-
-#TMPDIR=/home/spg5958/tmp
-#echo $TMPDIR
 
 python train_bichrom.py
 

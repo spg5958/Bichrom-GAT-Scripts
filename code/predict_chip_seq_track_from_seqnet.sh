@@ -18,9 +18,6 @@ conda activate pytorch_bichrom
 
 SECONDS=0
 
-#TMPDIR=/home/spg5958/tmp
-#echo $TMPDIR
-
 python predict_chip_seq_track_from_seqnet.py
 
 ELAPSED="Elapsed(trainNN.sh): $(($SECONDS / 3600))hrs $((($SECONDS / 60) % 60))min $(($SECONDS % 60))sec"

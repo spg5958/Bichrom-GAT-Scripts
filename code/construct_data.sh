@@ -17,9 +17,6 @@ conda activate pytorch_bichrom
 
 SECONDS=0
 
-#TMPDIR=/home/spg5958/tmp
-#echo $TMPDIR
-
 python construct_data.py
 
 ELAPSED="Elapsed(construct_data.sh): $(($SECONDS / 3600))hrs $((($SECONDS / 60) % 60))min $(($SECONDS % 60))sec"
