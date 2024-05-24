@@ -9,13 +9,17 @@
 #SBATCH --output=../output/slurm-%x.out
 umask 007
 
+
+# Slurm script to submit job for constructing training and test data.
+# Modify this as per your cluster specification
+
 source ~/conda_init.sh
 conda activate pytorch_bichrom
 
 SECONDS=0
 
-TMPDIR=/home/spg5958/tmp
-echo $TMPDIR
+#TMPDIR=/home/spg5958/tmp
+#echo $TMPDIR
 
 python predict_chip_seq_track_from_seqnet.py
 

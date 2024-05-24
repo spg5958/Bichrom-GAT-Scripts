@@ -2,34 +2,34 @@
 training_df_seq.bed
 
 label
-0    19459
-1      366
+0    7792
+1     148
 label
-0    0.981538
-1    0.018462
+0    0.98136
+1    0.01864
 =========================
 training_df_bimodal_bound.bed
 
 label
-1    333
+1    133
 label
 1    1.0
 =========================
 training_df_bimodal_unbound.bed
 
 label
-0    1332
+0    532
 label
 0    1.0
 =========================
 test_df_internal.bed
 
 label
-0    149
-1     37
+0    60
+1    15
 label
-0    0.801075
-1    0.198925
+0    0.8
+1    0.2
 =========================
 test_df_external.bed
 
@@ -39,3 +39,12 @@ label
 label
 0    0.996937
 1    0.003063
+=========================
+val_df_external.bed
+
+label
+0    473
+1      2
+label
+0    0.995789
+1    0.004211

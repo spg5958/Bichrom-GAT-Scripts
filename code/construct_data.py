@@ -20,8 +20,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
 
-def construct_training_set_seq(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, out_path, nbins, stride=5000):
-
+def construct_training_set_seq(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, out_path):
+    """
+    Construct training data for seq-net
+    """
+    
     # # prepare files for defining coordiantes
     # curr_genome_bdt = utils.get_genome_sizes(genome_sizes_file, to_keep=to_keep, to_filter=to_filter)
 
@@ -81,12 +84,10 @@ def construct_training_set_seq(genome_sizes_file, genome_fasta_file, peaks_file,
     return f"{out_path}/training_df_seq.bed"
     
     
-    
-    #return f"{out_path}/bound_sample_acc_df.bed", f"{out_path}/bound_sample_inacc_df.bed", f"{out_path}/bound_sample_all_df.bed", f"{out_path}/unbound_acc_df.bed", f"{out_path}/unbound_inacc_df.bed", f"{out_path}/unbound_all_df.bed"
-    
-    
-
-def construct_training_set_bimodal(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, out_path, nbins, stride=5000):
+def construct_training_set_bimodal(genome_sizes_file, genome_fasta_file, peaks_file, blacklist_file, to_keep, to_filter, window_length, out_path):
+    """
+    Construct training data for GAT (bimodal) network
+    """
 
     # # prepare files for defining coordiantes
     # curr_genome_bdt = utils.get_genome_sizes(genome_sizes_file, to_keep=to_keep, to_filter=to_filter)
@@ -201,7 +202,10 @@ def construct_training_set_bimodal(genome_sizes_file, genome_fasta_file, peaks_f
 
 
 def construct_internal_test_set():
-    
+    """
+    Construct test-set from trainig-set (90:10 split)
+    """
+
     out_path=config.data_path
     
     colnames=["chr","start","end","type","label","id"]
@@ -243,7 +247,10 @@ def construct_internal_test_set():
     
     return f"{out_path}/test_df_internal.bed"
 
-def construct_external_test_set(genome_sizes_file, peaks_file, blacklist_file, to_keep, window_length, stride=5000):
+def construct_external_test_set(genome_sizes_file, peaks_file, blacklist_file, to_keep, window_length, stride, data_set_type):
+    """
+    Construct test-set from the chromosomes not present in training data
+    """
 
     out_path=config.data_path
     
@@ -257,7 +264,7 @@ def construct_external_test_set(genome_sizes_file, peaks_file, blacklist_file, t
     
     bound_chip_peaks_bdt = BedTool.from_dataframe(bound_chip_peaks).intersect(blacklist_bdt, v=True)
     
-    chopped_genome_df = utils.chop_genome(genome_sizes_file, to_keep, excl=blacklist_bdt, stride=1000, l=window_length)
+    chopped_genome_df = utils.chop_genome(genome_sizes_file, to_keep, excl=blacklist_bdt, stride=stride, l=window_length)
                   
     chopped_genome_bdt_obj = BedTool.from_dataframe(chopped_genome_df)
     
@@ -282,13 +289,16 @@ def construct_external_test_set(genome_sizes_file, peaks_file, blacklist_file, t
     print(test_coords[test_coords["type"]=="neg_chop"].head())
     print(test_coords["type"].value_counts())
     
-    test_coords.to_csv(f"{out_path}/test_df_external.bed", header=False, index=False, sep="\t")
+    test_coords.to_csv(f"{out_path}/{data_set_type}_df_external.bed", header=False, index=False, sep="\t")
 
-    return f"{out_path}/test_df_external.bed"
+    return f"{out_path}/{data_set_type}_df_external.bed"
 
 
 def get_data_stats(bed_file_path_list=None, out_path=None):
-    
+    """
+    Report number of positive and negative samples in the training and test .bed files
+    """
+
     print("Getting data stats")
     
     out_file_path = f"{out_path}/stats.txt"
@@ -310,17 +320,21 @@ def get_data_stats(bed_file_path_list=None, out_path=None):
 
         
 def create_seq_onehot_pickle():
+    """
+    Pre-compute dictionary of one-hot encoding of whole genome and it store into a pickle file.
+    One-hot encoding is computed for equally sized bins of length config.stride.
+    keys: bin number
+    values: one-hot matrix
+    """
     
-    print(config.seq_onehot_dict_out_path)
-    if not os.path.exists(config.seq_onehot_dict_out_path):
+    print(config.seq_onehot_dict_path)
+    if not os.path.exists(config.seq_onehot_dict_path):
         print("Creating")
-        subprocess.call(['mkdir', "-p", config.seq_onehot_dict_out_path])
+        subprocess.call(['mkdir', "-p", "/".join(config.seq_onehot_dict_path.split("/")[:-1])])
     else:
         print(f"onehot_seq_dict dir exists")
     
-    _seq_onehot_dict_out_path = f"{config.seq_onehot_dict_out_path}/onehot_seq_dict_res_{config.stride}.pickle"
-    
-    if not os.path.isfile(_seq_onehot_dict_out_path):
+    if not os.path.isfile(config.seq_onehot_dict_path):
         genome_sizes_df = pd.read_csv(config.info, sep='\t', header=None, names=['chrom', 'length'])
         print(genome_sizes_df)
         print(config.stride)
@@ -338,59 +352,57 @@ def create_seq_onehot_pickle():
                 seq_onehot = seq_onehot.astype("int8")
                 l.append(seq_onehot)
             chr_dict[_chr]=l
-   
-        with open(_seq_onehot_dict_out_path, 'wb') as handle:
+            if _chr=="chr10":
+                break
+
+        with open(config.seq_onehot_dict_path, 'wb') as handle:
             pickle.dump(chr_dict, handle)
     else:
         print(f"onehot_seq_dict_res_{config.stride}.pickle exists")
 
 
-def create_hdf5_chromatin_tracks():
+def create_hdf5_file():
+    """
+    Pre-compute average of chip-seq bigwig file and store it into hdf5 file.
+    First, bigwig values are cliped at 10,000 & log2 transformed.
+    Then the average is taken over bins of size config.stride and it stored into .hdf5 file
+    hdf5 file groups:
+        |- name of chip-seq file
+            |- chr1
+            |- chr2
+            |- ...
+    """
+
     global arr_values
     print("#"*20)
-    print(config.hdf5_chromatin_tracks_out_path)
-    if not os.path.exists(config.hdf5_chromatin_tracks_out_path):
+    print(config.hdf5_file_path)
+    if not os.path.exists(config.hdf5_file_path):
         print("Creating hdf5 dir")
-        subprocess.call(['mkdir', "-p", config.hdf5_chromatin_tracks_out_path])
+        subprocess.call(['mkdir', "-p", "/".join(config.hdf5_file_path.split("/")[:-1])])
     else:
-        print(f"hdf5_chromatin_tracks_out_path dir exists")
+        print(f"hdf5_file_path dir exists")
     
-    _hdf5_chromatin_tracks_out_path = f"{config.hdf5_chromatin_tracks_out_path}/hdf5_chromatin_tracks_{config.stride}.h5"
-    print(_hdf5_chromatin_tracks_out_path)
-    
-    if not os.path.isfile(_hdf5_chromatin_tracks_out_path):
-#         bw_file_path_list = glob.glob(f'{config.chromatin_tracks_path}/*.bw')
-        bw_file_path_list=config.chromatin_tracks_path_list
+    if not os.path.isfile(config.hdf5_file_path):
+        bw_file_path_list=config.bigwig_tracks_path_list
         bw_obj_list = [pyBigWig.open(bw) for bw in bw_file_path_list]
 
         genome_sizes_df = pd.read_csv(config.info, sep='\t', header=None, names=['chrom', 'length'])
         print(genome_sizes_df)
         print(config.stride)
         
-        hdf5_file = h5py.File(_hdf5_chromatin_tracks_out_path, 'w')
+        hdf5_file = h5py.File(config.hdf5_file_path, 'w')
         for bw_file_path,bw in zip(bw_file_path_list, bw_obj_list):
-            chromatin_track_name = bw_file_path.split("/")[-1].split(".")[0]
-            print(chromatin_track_name)
-            hdf5_file.create_group(chromatin_track_name)
+            track_name = bw_file_path.split("/")[-1].split(".")[0]
+            print(track_name)
+            hdf5_file.create_group(track_name)
             for _, row in genome_sizes_df.iterrows(): 
                 _chr=row["chrom"]
                 _chr_length=row["length"]
                 print(_chr, _chr_length)
                 
-                hdf5_file[chromatin_track_name].create_group(_chr)
+                hdf5_file[track_name].create_group(_chr)
 
                 print(f'Mean = {bw.stats(_chr, type="mean")[0]}  Min = {bw.stats(_chr, type="min")[0]}  Max = {bw.stats(_chr, type="max")[0]}')
-                
-                # arr_values = []
-                # for i in tqdm(range(0, _chr_length, config.stride)):
-                    # if i+config.stride < _chr_length:
-                        # value = bw.stats(_chr, i, i+config.stride, type="mean")[0]
-                        # values = bw.values(_chr, i, i+config.stride)
-                        # values = np.array(values)
-                        # values = np.clip(values, None, 50000)
-                        # values_log = np.log(values+1)
-                        # mean_values_log = np.mean(values_log)
-                        # arr_values.append(mean_values_log)
                 
                 values = bw.values(_chr, 0, _chr_length)
                 end = (_chr_length//config.stride)*config.stride
@@ -401,18 +413,27 @@ def create_hdf5_chromatin_tracks():
                 print(end, arr_values.shape)
                 data=np.array(arr_values).astype("float16")
                 print(f'Mean = {np.mean(data)}  Min = {np.min(data)}  Max = {np.max(data)}')
-                hdf5_file[f"{chromatin_track_name}/{_chr}"].create_dataset("data", data=data, chunks=True)
+                hdf5_file[f"{track_name}/{_chr}"].create_dataset("data", data=data, chunks=True)
+                if _chr=="chr10":
+                    break
+
         hdf5_file.close()
     else:
         print("hdf5 exists")
 
 
+# MAIN FUNCTION
+
 def main():
-    
+    """
+    This function contains main sequece of data construction function calls.
+    """
+
     print(f"Frac = {config.frac}")
     print(f"window_len = {config.window_len}")
     print()
     
+    # Raise error if validation or test chromosomes contain chrM and chrUn
     if len(set.intersection(set(config.val_chroms), set(['chrM', 'chrUn']))) or len(set.intersection(set(config.test_chroms), set(['chrM', 'chrUn']))):
         raise ValueError("Validation and Test Sets must not use chrM, chrUn")
 
@@ -424,28 +445,17 @@ def main():
     subprocess.call(['mkdir', "-p", config.data_path])
     subprocess.call(["cp", config.config_file_path, config.data_path])
 
-    print(config.chromatin_tracks_path_list)
-    
-    """
-    training_chrom_list = pd.read_csv(config.info, sep="\t", names=["chrom", "len"])["chrom"].tolist()
-    print(training_chrom_list)
-    print(len(training_chrom_list))
-    for chrom in config.val_chroms+config.test_chroms:
-        print(f"Removing {chrom} from training_chrom_list")
-        training_chrom_list.remove(chrom)
-    """
-    # training_chrom_list = ["chr1"]
-    
+    print(config.bigwig_tracks_path_list)
     print(config.training_chrom_list)
-    print(len(config.training_chrom_list))
-
     
     # Construct Data
     print('-->Constructing train data ...')
     
+    print("-->Constructing seq_one_hot_dict")
     create_seq_onehot_pickle()
 
-    create_hdf5_chromatin_tracks()
+    print("-->Constructing hdf5 file")
+    create_hdf5_file()
 
     print('-->Constructing train data seq...')
     construct_training_set_seq(genome_sizes_file=config.info,
@@ -456,8 +466,6 @@ def main():
                                to_filter=config.val_chroms + config.test_chroms + ['chrM', 'chrUn'],
                                to_keep=config.training_chrom_list,
                                out_path=config.data_path,
-                               nbins=config.nbins, 
-                               stride=config.stride
                               )
     
     print('-->Constructing train data bimodal...')
@@ -469,21 +477,18 @@ def main():
                                    to_filter=config.val_chroms + config.test_chroms + ['chrM', 'chrUn'],
                                    to_keep=config.training_chrom_list,
                                    out_path=config.data_path,
-                                   nbins=config.nbins, 
-                                   stride=config.stride
                                   )
     
 
-    # print('-->Constructing validation data ...')
-    # bed_file_val = construct_test_set(genome_sizes_file=config.info,
-    #                                   peaks_file=config.peaks,
-    #                                   genome_fasta_file=config.fa,
-    #                                   blacklist_file=config.blacklist,
-    #                                   window_length=config.window_len,
-    #                                   to_keep=config.val_chroms,
-    #                                   out_prefix=config.data_path + '/data_val',
-    #                                   nbins=config.nbins,
-    #                                   stride=config.stride
+    print('-->Constructing validation data ...')
+    construct_external_test_set(genome_sizes_file=config.info,
+                                peaks_file=config.peaks,
+                                blacklist_file=config.blacklist,
+                                to_keep=config.val_chroms,
+                                window_length=config.window_len,
+                                stride=config.window_len,
+                                data_set_type="val"
+                               )
 
     print('-->Constructing internal test data ...')
     bed_file_internal_test_set = construct_internal_test_set()
@@ -494,18 +499,21 @@ def main():
                                 blacklist_file=config.blacklist, 
                                 to_keep=config.test_chroms,
                                 window_length=config.window_len,
-                                stride=config.stride,
+                                stride=config.window_len,
+                                data_set_type="test"
                                )
 
     get_data_stats(bed_file_path_list = [f"{config.data_path}/training_df_seq.bed",
                                          f"{config.data_path}/training_df_bimodal_bound.bed",
                                          f"{config.data_path}/training_df_bimodal_unbound.bed",
                                          f"{config.data_path}/test_df_internal.bed",
-                                         f"{config.data_path}/test_df_external.bed"
+                                         f"{config.data_path}/test_df_external.bed",
+                                         f"{config.data_path}/val_df_external.bed"
                                         ],
                    out_path=config.data_path
                   )
 
-    
+
+# START OF PROGRAM    
 if __name__ == "__main__":
     main()

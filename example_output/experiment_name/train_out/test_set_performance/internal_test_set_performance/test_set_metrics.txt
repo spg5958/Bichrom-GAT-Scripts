@@ -1,0 +1,49 @@
+Model:BIMODAL
+AUC ROC:0.5733333333333333
+AUC PRC:0.2160540398674273
+
+CONFUSION MATRIX:
+[[35 25]
+ [ 5 10]]
+Total points = 75
+Value counts True = 
+   count
+0     60
+1     15
+Value counts Pred = 
+   count
+0     40
+1     35====================
+
+Model:BIMODAL_ZEROS
+AUC ROC:0.5
+AUC PRC:0.2
+
+CONFUSION MATRIX:
+[[60  0]
+ [15  0]]
+Total points = 75
+Value counts True = 
+   count
+0     60
+1     15
+Value counts Pred = 
+   count
+0     75====================
+
+Model:BIMODAL_ONES
+AUC ROC:0.5
+AUC PRC:0.2
+
+CONFUSION MATRIX:
+[[ 0 60]
+ [ 0 15]]
+Total points = 75
+Value counts True = 
+   count
+0     60
+1     15
+Value counts Pred = 
+   count
+1     75====================
+

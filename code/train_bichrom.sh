@@ -6,18 +6,21 @@
 #SBATCH --mem=100GB
 #SBATCH --partition=mahony
 #SBATCH --job-name=train_bichrom
-#SBATCH --output=../output/slurm-%x.out
+#SBATCH --output=../example_outpu/slurm-%x.out
 umask 007
+
+
+# Slurm script to submit job for training seq-net and GAT-net/Bimodal-net.
+# Modify this as per your cluster specification
 
 source ~/conda_init.sh
 conda activate pytorch_bichrom
 
-#export CUDA_VISIBLE_DEVICES=2,3
 
 SECONDS=0
 
-TMPDIR=/home/spg5958/tmp
-echo $TMPDIR
+#TMPDIR=/home/spg5958/tmp
+#echo $TMPDIR
 
 python train_bichrom.py
 

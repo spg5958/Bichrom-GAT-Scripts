@@ -4,17 +4,21 @@
 #SBATCH --ntasks=2
 #SBATCH --mem=100GB
 #SBATCH --partition=mahony
-#SBATCH --job-name=BN39-R4-construct_data
-#SBATCH --output=../../output/slurm-%x.out
+#SBATCH --job-name=construct_data
+#SBATCH --output=../../example_output/slurm-%x.out
 umask 007
+
+
+# Slurm script to submit job for constructing training and test data.
+# Modify this as per your cluster specification
 
 source ~/conda_init.sh
 conda activate pytorch_bichrom
 
 SECONDS=0
 
-TMPDIR=/home/spg5958/tmp
-echo $TMPDIR
+#TMPDIR=/home/spg5958/tmp
+#echo $TMPDIR
 
 python construct_data.py
 
